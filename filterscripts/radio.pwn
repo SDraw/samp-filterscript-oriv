@@ -20,20 +20,20 @@ public OnFilterScriptInit()
 	new file = ini_openFile("radio_settings.ini");
 	switch(file)
 	{
-	    case INI_FILE_NOT_FOUND:
+		case INI_FILE_NOT_FOUND:
 		{
 			print("Unable to load settings. File 'radio_settings.ini' doesn't exist.");
 			cp = false;
 		}
-	    case INI_TOO_LARGE_FILE:
-	    {
-	        print("File 'radio_settings.ini' is too large. Try to remove some lines from it.");
+		case INI_TOO_LARGE_FILE:
+		{
+			print("File 'radio_settings.ini' is too large. Try to remove some lines from it.");
 			cp = false;
 		}
 		case INI_READ_ERROR:
 		{
-		    print("File 'radio_settings.ini' reading error.");
-		    cp = false;
+			print("File 'radio_settings.ini' reading error.");
+			cp = false;
 		}
 	}
 	if(!cp) return 1;
@@ -42,26 +42,26 @@ public OnFilterScriptInit()
 	if(result == INI_KEY_NOT_FOUND) return print("Line 'Radios' hasn't been found in file 'radio_settings.ini'.");
 	for(new i = 1; i <= RadioNum; i++)
 	{
-	    format(line,32,"Radio_Title%d",i);
-	    result = ini_getString(file,line,str);
-	    if(result == INI_KEY_NOT_FOUND) return printf("'%s' hasn't been found if file 'radio_settings.ini'.",line);
+		format(line,32,"Radio_Title%d",i);
+		result = ini_getString(file,line,str);
+		if(result == INI_KEY_NOT_FOUND) return printf("'%s' hasn't been found in file 'radio_settings.ini'.",line);
 		SetGVarString(line,str);
 		format(line,32,"Radio_URL%d",i);
 		result = ini_getString(file,line,str);
-		if(result == INI_KEY_NOT_FOUND) return printf("'%s' hasn't been found if file 'radio_settings.ini'.",line);
+		if(result == INI_KEY_NOT_FOUND) return printf("'%s' hasn't been found in file 'radio_settings.ini'.",line);
 		SetGVarString(line,str);
 	}
 	ini_closeFile(file);
 	ScriptLoaded = true;
 	for(new i = 1; i <= MAX_VEHICLES; i++)
 	{
-	    for(new j = 0; j < 9; j++) Passengers[i][j] = INVALID_PLAYER_ID;
-	    CurrentRadio[i] = random(RadioNum+1);
+		for(new j = 0; j < 9; j++) Passengers[i][j] = INVALID_PLAYER_ID;
+		CurrentRadio[i] = random(RadioNum+1);
 	}
 	for(new i = 0; i < MAX_PLAYERS; i++)
 	{
-	    if(!IsPlayerConnected(i)) continue;
-	    RadioTD[i] = CreatePlayerTextDraw(i, 318.500000, 22.749988, " ");
+		if(!IsPlayerConnected(i)) continue;
+		RadioTD[i] = CreatePlayerTextDraw(i, 318.500000, 22.749988, " ");
 		PlayerTextDrawLetterSize(i, RadioTD[i], 0.400000, 1.600000);
 		PlayerTextDrawAlignment(i, RadioTD[i], 2);
 		PlayerTextDrawColor(i, RadioTD[i], -1872752385);
@@ -72,21 +72,21 @@ public OnFilterScriptInit()
 		PlayerTextDrawSetProportional(i, RadioTD[i], 1);
 		if(IsPlayerInAnyVehicle(i))
 		{
-		    LastVeh[i] = GetPlayerVehicleID(i);
-		    if(GetPlayerState(i) == PLAYER_STATE_DRIVER || GetPlayerState(i) == PLAYER_STATE_PASSENGER)
-		    {
+			LastVeh[i] = GetPlayerVehicleID(i);
+			if(GetPlayerState(i) == PLAYER_STATE_DRIVER || GetPlayerState(i) == PLAYER_STATE_PASSENGER)
+			{
 				if(GetPlayerState(i) == PLAYER_STATE_DRIVER) ArrayID[i] = -1;
 				else
 				{
-		            ArrayID[i] = GetPlayerVehicleSeat(i);
-				    if(ArrayID[i] == 128) Passengers[LastVeh[i]][8] = i;
-				    else Passengers[LastVeh[i]][ArrayID[i]-1] = i;
+					ArrayID[i] = GetPlayerVehicleSeat(i);
+					if(ArrayID[i] == 128) Passengers[LastVeh[i]][8] = i;
+					else Passengers[LastVeh[i]][ArrayID[i]-1] = i;
 				}
-                switch(CurrentRadio[LastVeh[i]])
+				switch(CurrentRadio[LastVeh[i]])
 				{
-				    case 0: PlayerTextDrawSetString(i,RadioTD[i],"Radio Off");
-				    default:
-				    {
+					case 0: PlayerTextDrawSetString(i,RadioTD[i],"Radio Off");
+					default:
+					{
 						format(line,32,"Radio_Title%d",CurrentRadio[LastVeh[i]]);
 						GetGVarString(line,str,128);
 						PlayerTextDrawSetString(i,RadioTD[i],str);
@@ -109,21 +109,21 @@ public OnFilterScriptExit()
 {
 	if(RadioNum != 0)
 	{
-	    new str[32];
-	    for(new i = 1; i <= RadioNum; i++)
-	    {
-	        format(str,32,"Radio_Title%d",i);
-	        DeleteGVar(str);
-	        format(str,32,"Radio_URL%d",i);
-	        DeleteGVar(str);
+		new str[32];
+		for(new i = 1; i <= RadioNum; i++)
+		{
+			format(str,32,"Radio_Title%d",i);
+			DeleteGVar(str);
+			format(str,32,"Radio_URL%d",i);
+			DeleteGVar(str);
 		}
 	}
 	if(ScriptLoaded)
 	{
-	    for(new i = 0; i < MAX_PLAYERS; i++)
-	    {
-	        if(!IsPlayerConnected(i)) continue;
-	        if(IsPlayerInAnyVehicle(i)) if(CurrentRadio[GetPlayerVehicleID(i)] != 0) StopAudioStreamForPlayer(i);
+		for(new i = 0; i < MAX_PLAYERS; i++)
+		{
+			if(!IsPlayerConnected(i)) continue;
+			if(IsPlayerInAnyVehicle(i)) if(CurrentRadio[GetPlayerVehicleID(i)] != 0) StopAudioStreamForPlayer(i);
 		}
 	}
 	return 0;
@@ -149,10 +149,10 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid)
 {
-    if(!ScriptLoaded) return 0;
-    if(ArrayID[playerid] != -1)
-    {
-        if(ArrayID[playerid] == 128) Passengers[LastVeh[playerid]][8] = INVALID_PLAYER_ID;
+	if(!ScriptLoaded) return 0;
+	if(ArrayID[playerid] != -1)
+	{
+		if(ArrayID[playerid] == 128) Passengers[LastVeh[playerid]][8] = INVALID_PLAYER_ID;
 		else Passengers[LastVeh[playerid]][ArrayID[playerid]-1] = INVALID_PLAYER_ID;
 	}
 	if(ChangeTimer[playerid] != -1) KillTimer(ChangeTimer[playerid]);
@@ -161,16 +161,16 @@ public OnPlayerDisconnect(playerid)
 
 public OnPlayerStateChange(playerid,newstate,oldstate)
 {
-    if(!ScriptLoaded) return 0;
+	if(!ScriptLoaded) return 0;
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
 		LastVeh[playerid] = GetPlayerVehicleID(playerid);
 		switch(CurrentRadio[LastVeh[playerid]])
 		{
-		    case 0: PlayerTextDrawSetString(playerid,RadioTD[playerid],"Radio Off");
+			case 0: PlayerTextDrawSetString(playerid,RadioTD[playerid],"Radio Off");
 			default:
 			{
-			    new line[32],str[128];
+				new line[32],str[128];
 				format(line,32,"Radio_Title%d",CurrentRadio[LastVeh[playerid]]);
 				GetGVarString(line,str,128);
 				PlayerTextDrawSetString(playerid,RadioTD[playerid],str);
@@ -196,16 +196,16 @@ public OnPlayerStateChange(playerid,newstate,oldstate)
 	}
 	if(newstate == PLAYER_STATE_PASSENGER)
 	{
-	    LastVeh[playerid] = GetPlayerVehicleID(playerid);
-	    ArrayID[playerid] = GetPlayerVehicleSeat(playerid);
-	    if(ArrayID[playerid] == 128) Passengers[LastVeh[playerid]][8] = playerid;
-	    else Passengers[LastVeh[playerid]][ArrayID[playerid]-1] = playerid;
-	    switch(CurrentRadio[LastVeh[playerid]])
+		LastVeh[playerid] = GetPlayerVehicleID(playerid);
+		ArrayID[playerid] = GetPlayerVehicleSeat(playerid);
+		if(ArrayID[playerid] == 128) Passengers[LastVeh[playerid]][8] = playerid;
+		else Passengers[LastVeh[playerid]][ArrayID[playerid]-1] = playerid;
+		switch(CurrentRadio[LastVeh[playerid]])
 		{
-		    case 0: PlayerTextDrawSetString(playerid,RadioTD[playerid],"Radio Off");
+			case 0: PlayerTextDrawSetString(playerid,RadioTD[playerid],"Radio Off");
 			default:
 			{
-			    new line[32],str[128];
+				new line[32],str[128];
 				format(line,32,"Radio_Title%d",CurrentRadio[LastVeh[playerid]]);
 				GetGVarString(line,str,128);
 				PlayerTextDrawSetString(playerid,RadioTD[playerid],str);
@@ -220,7 +220,7 @@ public OnPlayerStateChange(playerid,newstate,oldstate)
 	}
 	if(oldstate == PLAYER_STATE_PASSENGER)
 	{
-	    StopAudioStreamForPlayer(playerid);
+		StopAudioStreamForPlayer(playerid);
 		if(ChangeTimer[playerid] != -1)
 		{
 			KillTimer(ChangeTimer[playerid]);
@@ -237,18 +237,18 @@ public OnPlayerStateChange(playerid,newstate,oldstate)
 
 public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 {
-    if(!ScriptLoaded) return 0;
-    if(!IsPlayerInAnyVehicle(playerid)) return 0;
+	if(!ScriptLoaded) return 0;
+	if(!IsPlayerInAnyVehicle(playerid)) return 0;
 	if(newkeys & KEY_YES || newkeys & KEY_NO)
 	{
-	    if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-	    {
-	        if(!CanChangeRadio[playerid]) return 0;
-	        new bool:rf = false;
-	        if(newkeys & KEY_YES)
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+		{
+			if(!CanChangeRadio[playerid]) return 0;
+			new bool:rf = false;
+			if(newkeys & KEY_YES)
 			{
 				CurrentRadio[LastVeh[playerid]]++;
-		        if(CurrentRadio[LastVeh[playerid]] > RadioNum)
+				if(CurrentRadio[LastVeh[playerid]] > RadioNum)
 				{
 					CurrentRadio[LastVeh[playerid]] = 0;
 					rf = true;
@@ -257,8 +257,8 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 			if(newkeys & KEY_NO)
 			{
 				CurrentRadio[LastVeh[playerid]]--;
-		        if(CurrentRadio[LastVeh[playerid]] < 0) CurrentRadio[LastVeh[playerid]] = RadioNum;
-		        if(CurrentRadio[LastVeh[playerid]] == 0) rf = true;
+				if(CurrentRadio[LastVeh[playerid]] < 0) CurrentRadio[LastVeh[playerid]] = RadioNum;
+				if(CurrentRadio[LastVeh[playerid]] == 0) rf = true;
 			}
 			if(rf)
 			{
@@ -266,18 +266,18 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 				StopAudioStreamForPlayer(playerid);
 				for(new i = 0; i < 9; i++)
 				{
-				    if(Passengers[LastVeh[playerid]][i] == INVALID_PLAYER_ID) continue;
-				    if(!CanChangeRadio[Passengers[LastVeh[playerid]][i]]) continue;
-				    PlayerTextDrawSetString(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]],"Radio Off");
-				    CanChangeRadio[Passengers[LastVeh[playerid]][i]] = false;
-				    StopAudioStreamForPlayer(Passengers[LastVeh[playerid]][i]);
-				    PlayerTextDrawShow(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]]);
-				    ChangeTimer[Passengers[LastVeh[playerid]][i]] = SetTimerEx("RestoreTimer",3500,false,"d",Passengers[LastVeh[playerid]][i]);
+					if(Passengers[LastVeh[playerid]][i] == INVALID_PLAYER_ID) continue;
+					if(!CanChangeRadio[Passengers[LastVeh[playerid]][i]]) continue;
+					PlayerTextDrawSetString(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]],"Radio Off");
+					CanChangeRadio[Passengers[LastVeh[playerid]][i]] = false;
+					StopAudioStreamForPlayer(Passengers[LastVeh[playerid]][i]);
+					PlayerTextDrawShow(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]]);
+					ChangeTimer[Passengers[LastVeh[playerid]][i]] = SetTimerEx("RestoreTimer",3500,false,"d",Passengers[LastVeh[playerid]][i]);
 				}
 			}
 			else
 			{
-			    new line[32],name[32],str[128];
+				new line[32],name[32],str[128];
 				format(line,32,"Radio_Title%d",CurrentRadio[LastVeh[playerid]]);
 				GetGVarString(line,name,32);
 				format(line,32,"Radio_URL%d",CurrentRadio[LastVeh[playerid]]);
@@ -288,14 +288,14 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 				PlayAudioStreamForPlayer(playerid,str);
 				for(new i = 0; i < 9; i++)
 				{
-				    if(Passengers[LastVeh[playerid]][i] == INVALID_PLAYER_ID) continue;
-				    if(!CanChangeRadio[Passengers[LastVeh[playerid]][i]]) continue;
-				    PlayerTextDrawSetString(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]],name);
-				    CanChangeRadio[Passengers[LastVeh[playerid]][i]] = false;
-				    StopAudioStreamForPlayer(Passengers[LastVeh[playerid]][i]);
-				    PlayAudioStreamForPlayer(Passengers[LastVeh[playerid]][i],str);
-				    PlayerTextDrawShow(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]]);
-				    ChangeTimer[Passengers[LastVeh[playerid]][i]] = SetTimerEx("RestoreTimer",3500,false,"d",Passengers[LastVeh[playerid]][i]);
+					if(Passengers[LastVeh[playerid]][i] == INVALID_PLAYER_ID) continue;
+					if(!CanChangeRadio[Passengers[LastVeh[playerid]][i]]) continue;
+					PlayerTextDrawSetString(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]],name);
+					CanChangeRadio[Passengers[LastVeh[playerid]][i]] = false;
+					StopAudioStreamForPlayer(Passengers[LastVeh[playerid]][i]);
+					PlayAudioStreamForPlayer(Passengers[LastVeh[playerid]][i],str);
+					PlayerTextDrawShow(Passengers[LastVeh[playerid]][i],RadioTD[Passengers[LastVeh[playerid]][i]]);
+					ChangeTimer[Passengers[LastVeh[playerid]][i]] = SetTimerEx("RestoreTimer",3500,false,"d",Passengers[LastVeh[playerid]][i]);
 				}
 			}
 			PlayerTextDrawShow(playerid,RadioTD[playerid]);
@@ -307,7 +307,7 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 
 public RestoreTimer(playerid)
 {
-    CanChangeRadio[playerid] = true;
-    PlayerTextDrawHide(playerid,RadioTD[playerid]);
-    return 1;
+	CanChangeRadio[playerid] = true;
+	PlayerTextDrawHide(playerid,RadioTD[playerid]);
+	return 1;
 }
