@@ -1,6 +1,4 @@
-Online Radio In Vehicles
-========
-Filterscript for radiostation in SA-MP.
+Radiostations FS for SA-MP.
 
 Requirements:
 - mxINI (http://www.mxgames.kz/dev/inc/mxINI_v0.5.zip)
